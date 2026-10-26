@@ -337,6 +337,28 @@ const page = (items, offset) => {
   return { slice: rest.slice(0, more ? 3 : 4), next: more ? start + (more ? 3 : 4) : null };
 };
 
+// The style popup and the style board read the same list, so card letters match popup options.
+// Each item: { id, say, styles } where styles are the real style ids the card stands for.
+export const styleChoices = (arg, offset) => {
+  const groupItem = ([id, say, styles]) => ({ id, say, styles: Object.keys(styles).filter(validStyle) });
+  if (!arg) {
+    const known = new Set(styleMap().keys());
+    const glow = GLOW_GROUPS.flatMap(([, , styles]) => Object.keys(styles)).filter(validStyle);
+    const items = [
+      ...STYLE_GROUPS.map(groupItem),
+      { id: "glow", say: "นึกภาพว่าเป็นของเหลว แสงฟุ้ง เกมเก่า หรือตัวหนังสือที่เด้งขึ้นมา", styles: glow },
+      ...styleIds().filter((id) => !known.has(id)).map((id) => ({ id, say: "นึกภาพว่าภาพนี้มีอยู่ในคลัง แต่ยังไม่มีคำอธิบายภาษาคน", styles: [id] })),
+    ];
+    return { ask: "ชอบภาพแบบไหนมากกว่ากัน", items, next: null };
+  }
+  if (arg === "glow") return { ask: "ชอบแบบไหนมากที่สุด", items: GLOW_GROUPS.map(groupItem), next: null };
+  const group = [...STYLE_GROUPS, ...GLOW_GROUPS].find(([id]) => id === arg);
+  if (!group) return null;
+  const items = Object.entries(group[2]).filter(([id]) => validStyle(id)).map(([id, say]) => ({ id, say, styles: [id] }));
+  const shown = page(items, offset);
+  return { ask: "แบบไหนใกล้ที่คุณชอบที่สุด", items: shown.slice, next: shown.next };
+};
+
 const printItems = (items, offset, ask, raw = false) => {
   if (ask) console.log(`ASK ${ask}`);
   if (raw) console.log("REWRITE each RAW line as a short everyday LABEL and DESC, then check both with lint; never show RAW as is");
@@ -398,37 +420,18 @@ const main = () => {
     printItems(sceneFiles(), offset, "คลิปนี้จะเน้นโชว์อะไร");
     return;
   }
-  if (cmd === "styles" && !arg) {
-    console.log("ASK ชอบภาพแบบไหนมากกว่ากัน");
-    for (const [id, label] of STYLE_GROUPS) {
-      console.log(`SAY ${label}`);
-      console.log(`ID ${id}`);
-    }
-    console.log("SAY นึกภาพว่าเป็นของเหลว แสงฟุ้ง เกมเก่า หรือตัวหนังสือที่เด้งขึ้นมา");
-    console.log("ID glow");
-    const known = new Set(styleMap().keys());
-    for (const id of styleIds()) if (!known.has(id)) {
-      console.log("SAY นึกภาพว่าภาพนี้มีอยู่ในคลัง แต่ยังไม่มีคำอธิบายภาษาคน");
-      console.log(`ID ${id}`);
-    }
-    return;
-  }
-  if (cmd === "styles" && arg === "glow") {
-    console.log("ASK ชอบแบบไหนมากที่สุด");
-    for (const [id, label] of GLOW_GROUPS) {
-      console.log(`SAY ${label}`);
-      console.log(`ID ${id}`);
-    }
-    return;
-  }
-  if (cmd === "styles" && arg) {
-    const group = [...STYLE_GROUPS, ...GLOW_GROUPS].find(([id]) => id === arg);
-    if (!group) {
+  if (cmd === "styles") {
+    const menu = styleChoices(arg, offset);
+    if (!menu) {
       console.error(`unknown style group ${arg}`);
       process.exit(1);
     }
-    const items = Object.entries(group[2]).filter(([id]) => validStyle(id)).map(([id, sight]) => ({ id, sight }));
-    printItems(items, offset, "แบบไหนใกล้ที่คุณชอบที่สุด");
+    console.log(`ASK ${menu.ask}`);
+    for (const item of menu.items) {
+      console.log(`SAY ${item.say}`);
+      console.log(`ID ${item.id}`);
+    }
+    if (menu.next != null) console.log(`NEXT ${menu.next}`);
     return;
   }
   if (cmd === "shot-groups") {
