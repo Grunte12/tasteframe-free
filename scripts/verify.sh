@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
 # verify.sh - check an MP4 against expected codec / size / duration.
 # Usage: verify.sh <file.mp4> [expected_width] [expected_height]
-#                   [expected_duration_sec] [tolerance_sec]
+#                   <expected_duration_sec> [tolerance_sec]
 set -euo pipefail
 
 usage() {
   cat <<'EOF'
-Usage: verify.sh <file.mp4> [expected_width] [expected_height] [expected_duration_sec] [tolerance_sec]
+Usage: verify.sh <file.mp4> <expected_width> <expected_height> <expected_duration_sec> [tolerance_sec]
 
 Checks (one line per check, PASS/FAIL summary at the end):
   - file has a video stream
   - video codec is h264
   - width / height match the expected values (default: 1080 x 1920)
-  - duration is within tolerance of expected (default: 15s +/- 0.15s)
+  - duration is within tolerance of the planned length from the brief (tolerance default: 0.15s)
   - reports whether an audio stream exists (informational, not a failure)
 
 Exits non-zero if any required check fails.
@@ -20,19 +20,19 @@ EOF
 }
 
 # --- Args -------------------------------------------------------------------
-if [[ $# -lt 1 || $# -gt 5 ]]; then
+case "${1:-}" in
+  -h|--help) usage; exit 0 ;;
+esac
+if [[ $# -lt 4 || $# -gt 5 ]]; then
   echo "Error: wrong number of arguments." >&2
   usage >&2
   exit 2
 fi
-case "${1:-}" in
-  -h|--help) usage; exit 0 ;;
-esac
 
 file="$1"
 exp_w="${2:-1080}"
 exp_h="${3:-1920}"
-exp_dur="${4:-15}"
+exp_dur="$4"
 tol="${5:-0.15}"
 
 # Validate numeric arguments.
@@ -50,6 +50,19 @@ command -v ffprobe >/dev/null 2>&1 || { echo "✗ ffprobe not found in PATH" >&2
 fail=0
 pass_line() { echo "✓ $1"; }
 fail_line() { echo "✗ $1"; fail=1; }
+
+# Workflow receipt: a project that uses Tasteframe cannot pass on codec alone.
+guard_dir="$(cd "$(dirname "$file")" && pwd)"
+while [[ "$guard_dir" != "/" ]]; do
+  if [[ -f "$guard_dir/.tasteframe-state.json" ]]; then
+    node "$(cd "$(dirname "$0")" && pwd)/guard.mjs" check-deliver --project "$guard_dir" || {
+      echo "FAIL: $file"
+      exit 1
+    }
+    break
+  fi
+  guard_dir="$(dirname "$guard_dir")"
+done
 
 # --- File existence -----------------------------------------------------------
 if [[ ! -f "$file" ]]; then
@@ -104,12 +117,17 @@ else
   fail_line "duration within ${tol}s of ${exp_dur}s (got: ${duration:-unknown}s)"
 fi
 
-# Audio is reported only: silent renders are valid inputs for mix-vo.sh.
+# Audio is reported only, because silent renders are valid inputs for mix-vo.sh.
+# On the final delivery file, run with REQUIRE_AUDIO=1 so a missing track fails.
 if [[ -n "$audio_codec" ]]; then
   echo "✓ audio stream present (codec: $audio_codec)"
+elif [[ "${REQUIRE_AUDIO:-0}" == "1" ]]; then
+  fail_line "audio stream present (none found)"
 else
   echo "✗ audio stream present (none found) [informational]"
 fi
+size_mb=$(( $(wc -c < "$file") / 1048576 ))
+echo "• file size ${size_mb} MB"
 
 # --- Verdict ------------------------------------------------------------------
 if [[ "$fail" -eq 0 ]]; then

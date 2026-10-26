@@ -1,0 +1,115 @@
+{
+  "audio": {
+    "musicNote": "เพลง pop จังหวะกลาง 100-110 BPM จากคลังเพลง TikTok ระดับเสียงต่ำกว่า VO ประมาณ -12 dB เริ่ม beat ตั้งแต่เฟรมแรก",
+    "voiceStyle": "ผู้หญิงไทย อายุประมาณ 28 ปี น้ำเสียงสดใส พูดเร็วปานกลาง เป็นกันเอง เหมือนเพื่อนแนะนำเพื่อน"
+  },
+  "beats": [
+    {
+      "cameraMove": "macro + punch-in cut ที่วินาที 0.8",
+      "claim": "ผิวของผู้ชมหมองเพราะแดด — pain point หลักที่คลิปนี้พูดด้วย",
+      "endSec": 2.0,
+      "headline": "ผิวหมองเพราะแดด?",
+      "id": "b01-hook",
+      "proofAsset": "assets/pain-point-sun-exposure.jpg",
+      "purpose": "หยุดนิ้วผู้ชมด้วยคำถามที่ตรง pain point ห้ามเปิดด้วยโลโก้",
+      "sfx": "pop ตอน headline เด้งเข้า",
+      "shotRecipe": "hook-question",
+      "sourceOfTruth": "บรีฟข้อ 2 (pain point และภาษาที่ลูกค้าใช้เรียกปัญหา จากคำของผู้ใช้)",
+      "startSec": 0.0,
+      "subtext": "",
+      "techniqueIds": [
+        "word-pop",
+        "punch-in",
+        "macro-open"
+      ],
+      "visual": "ภาพ macro หยดเซรั่มหยดลงบนหลังมือ พื้นหลังเบลอสีครีม ตัวอักษรใหญ่เด้งเข้ากลางจอ",
+      "voLine": "ผิวหมองเพราะแดดใช่ไหม?"
+    },
+    {
+      "cameraMove": "orbit 180 องศา รอบตัวสินค้า",
+      "claim": "เซรั่มวิตามินซีเข้มข้น ซึมไว ไม่เหนียวเหนอะหนะ",
+      "endSec": 6.0,
+      "headline": "ตัวนี้เอาอยู่",
+      "id": "b02-problem-product",
+      "proofAsset": "assets/spec-glowup-vitc.pdf",
+      "purpose": "เชื่อมปัญหาเข้ากับสินค้า ให้สินค้าเข้าฉากเป็นพระเอก",
+      "sfx": "whoosh ตอนกล้องโคจร",
+      "shotRecipe": "problem-to-product-reveal",
+      "sourceOfTruth": "เอกสารสเปกสินค้าจากผู้ใช้ + Subject Inventory ข้อ 1–2 ในบรีฟ",
+      "startSec": 2.0,
+      "subtext": "วิตามินซีเข้มข้น ซึมไว ไม่เหนียว",
+      "techniqueIds": [
+        "orbit-reveal",
+        "sticker-label"
+      ],
+      "visual": "ตัดภาพกระจกในห้องน้ำ แสงเช้า แล้วมือหยิบขวดเซรั่ม GlowUp เข้ากลางเฟรม กล้อง orbit รอบขวดครึ่งรอบ",
+      "voLine": "ลองตัวนี้ เซรั่มวิตามินซี ซึมไว ไม่เหนอะหนะ"
+    },
+    {
+      "cameraMove": "static lock-off ให้กราฟิกเป็นฝ่ายเคลื่อน",
+      "claim": "ซึมใน 10 วิ / ไม่แสบผิว / ใช้ได้เช้า–เย็น",
+      "endSec": 11.0,
+      "headline": "ซึมใน 10 วิ / ไม่แสบผิว / ใช้ได้เช้า-เย็น",
+      "id": "b03-features",
+      "proofAsset": "assets/demo-absorb-10s.mp4",
+      "purpose": "ย้ำคุณสมบัติ 3 ข้อแบบจำง่าย ข้อละประมาณ 1.5 วิ",
+      "sfx": "ติ๊งเบา ๆ ทุกครั้งที่คุณสมบัติแต่ละข้อเด้งเข้า",
+      "shotRecipe": "feature-pop-x3",
+      "sourceOfTruth": "คลิปทดสอบการซึมที่ผู้ใช้ถ่ายเอง + เอกสารสเปกสินค้า (Subject Inventory ข้อ 3)",
+      "startSec": 6.0,
+      "subtext": "",
+      "techniqueIds": [
+        "word-pop",
+        "icon-pop",
+        "stagger-in"
+      ],
+      "visual": "ขวดสินค้าอยู่กลางจอคงที่ คุณสมบัติ 3 ข้อเด้งเข้าทีละข้อจากซ้าย ขวา และล่าง พร้อมไอคอนเล็ก",
+      "voLine": "ซึมไวในสิบวิ ไม่แสบผิว ใช้ได้ทั้งเช้าและเย็น"
+    },
+    {
+      "cameraMove": "static + scale slam ของตัวเลขราคา",
+      "claim": "ราคาวันนี้ 299 บาท จากปกติ 499 บาท",
+      "endSec": 15.0,
+      "headline": "วันนี้ 299.-",
+      "id": "b04-price-cta",
+      "proofAsset": "assets/promo-price-confirm.png",
+      "purpose": "ปิดการขายด้วยราคาและ CTA เดียวที่ชัดที่สุด",
+      "sfx": "slam ตอนราคาเข้า และเสียง cha-ching สั้น ๆ",
+      "shotRecipe": "price-slam-cta",
+      "sourceOfTruth": "ผู้ใช้ยืนยันตัวเลขในบรีฟข้อ 1 — ราคาจริงเท่านั้น ห้ามแต่ง",
+      "startSec": 11.0,
+      "subtext": "จากปกติ 499.- กดตะกร้าก่อนหมดโปร",
+      "techniqueIds": [
+        "price-slam",
+        "strike-through",
+        "arrow-bounce",
+        "logo-lockup"
+      ],
+      "visual": "ราคาตัวใหญ่สี accent กระแทกเข้ากลางจอ ราคาเดิมขีดฆ่า โลโก้แบรนด์ปิดท้าย ลูกศรชี้ลงไปที่ตำแหน่งตะกร้า",
+      "voLine": "วันนี้สองร้อยเก้าสิบเก้าบาท กดตะกร้าเลยก่อนหมดโปร"
+    }
+  ],
+  "brand": {
+    "colors": {
+      "accent": "#FF4D00",
+      "bg": "#FFF7F0",
+      "ink": "#1A1A1A",
+      "secondary": "#FFB59E"
+    },
+    "fonts": {
+      "body": "Prompt-Regular",
+      "display": "Prompt-Bold"
+    },
+    "logoFile": "assets/logo-glowup.png"
+  },
+  "project": {
+    "format": {
+      "durationSec": 15,
+      "fps": 30,
+      "height": 1920,
+      "width": 1080
+    },
+    "platform": "tiktok",
+    "title": "เซรั่มวิตามินซี GlowUp — คลิปเปิดตัว 15 วิ"
+  }
+}

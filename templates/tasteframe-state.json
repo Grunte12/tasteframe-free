@@ -1,0 +1,23 @@
+{
+  "phase": "interview",
+  "packageStatus": "unconfirmed",
+  "answers": {
+    "who": "",
+    "purpose": "",
+    "why": "",
+    "lifestyle": "",
+    "taste": "",
+    "notMe": "",
+    "scene": "",
+    "style": "",
+    "recipe": "",
+    "technique": "",
+    "layout": ""
+  },
+  "interviewConfirmed": false,
+  "briefConfirmed": false,
+  "styleId": "",
+  "shelfUrl": "",
+  "demoAttested": [],
+  "packageConfirmed": false
+}
