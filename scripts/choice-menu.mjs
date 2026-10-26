@@ -313,9 +313,21 @@ export const TUNE = {
     ask: "อยากให้ตัวหนังสือในคลิปดูเป็นแบบไหน",
     base: /font|type|typograph|letter|word|text|字/i,
   },
+  depth: {
+    ask: "อยากให้ภาพดูแบนเรียบ หรือนูนลึกมีแสงเงา",
+    base: /3D|depth|light|shadow|camera|perspective|光|影|景深/i,
+  },
   motion: {
-    ask: "อยากให้ของในคลิปขยับเร็วหรือช้า",
+    ask: "อยากให้ของในคลิปขยับนุ่ม หรือขยับคม",
     base: /^Rules:|ease|overshoot|stagger|squash|settle|缓动|节奏|视觉特征/i,
+  },
+  transition: {
+    ask: "อยากให้ภาพเปลี่ยนจากฉากหนึ่งไปอีกฉากแบบไหน",
+    base: /transition|cut|wipe|morph|match|转场|切/i,
+  },
+  pace: {
+    ask: "อยากให้คลิปเปลี่ยนภาพถี่แค่ไหน",
+    base: /BPM|tempo|rhythm|pace|节拍/i,
   },
   sound: {
     ask: "อยากให้คลิปมีเสียงแบบไหน",

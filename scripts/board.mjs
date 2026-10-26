@@ -136,9 +136,49 @@ const soundWave = (energy) => {
   return `<div class="wave">${Array.from({ length: 40 }, (_, i) => `<i style="height:${Math.round(Math.min(1, Math.max(0.06, f(i / 39))) * 130)}px"></i>`).join("")}</div>`;
 };
 
+// Depth is shown as three cards: flat paper, soft shadows, or tilted shapes with light and shadow.
+const DEPTH = {
+  flat: (c, i) => `background:${c};border-radius:10px`,
+  soft: (c, i) => `background:linear-gradient(180deg,#ffffff55,#00000000),${c};border-radius:16px;box-shadow:0 10px 22px rgba(0,0,0,.22)`,
+  deep: (c, i) => `background:linear-gradient(160deg,#ffffff88,#00000033 70%),${c};border-radius:14px;box-shadow:${8 - i * 8}px 12px 18px rgba(0,0,0,.35);transform:perspective(420px) rotateY(${28 - i * 28}deg) rotateX(14deg)`,
+};
+const depthStage = (depth, colors) => {
+  const look = DEPTH[depth] || DEPTH.flat;
+  return `<div class="stage" style="display:flex;align-items:center;justify-content:center;gap:22px">${colors.map((c, i) => `<div style="width:70px;height:84px;${look(c, i)}"></div>`).join("")}</div>`;
+};
+// A scene change is shown as before → middle of the change → after.
+const scene = (bg, shape, extra = "") => `<div style="position:absolute;inset:0;background:${bg};display:grid;place-items:center;${extra}"><div style="width:34px;height:34px;background:#fff;${shape}"></div></div>`;
+const TRANSITION = {
+  cut: (a, b) => scene(a, "border-radius:50%", "clip-path:inset(0 50% 0 0)") + scene(b, "border-radius:6px", "clip-path:inset(0 0 0 50%)") + `<div style="position:absolute;left:50%;top:0;bottom:0;border-left:3px solid #fff"></div>`,
+  slide: (a, b) => scene(a, "border-radius:50%", "transform:translateX(-50%)") + scene(b, "border-radius:6px", "transform:translateX(50%)"),
+  fade: (a, b) => scene(a, "border-radius:50%") + scene(b, "border-radius:6px", "opacity:.5"),
+  morph: (a, b) => scene(`linear-gradient(90deg,${a},${b})`, "border-radius:28%;transform:scale(1.4)"),
+  zoom: (a, b) => scene(a, "border-radius:50%", "transform:scale(2.2);opacity:.55") + scene(b, "border-radius:6px", "transform:scale(.55);opacity:.8;background:transparent"),
+  wipe: (a, b) => scene(a, "border-radius:50%") + scene(b, "border-radius:6px", "clip-path:polygon(0 0,62% 0,38% 100%,0 100%)"),
+};
+const transitionStage = (kind, a, b) => {
+  const mid = TRANSITION[kind] || TRANSITION.cut;
+  const box = (inner) => `<div style="position:relative;flex:1;height:88px;border-radius:10px;overflow:hidden">${inner}</div>`;
+  const arrow = `<div style="font-size:26px;color:#8a8780">→</div>`;
+  return `<div class="stage" style="display:flex;align-items:center;gap:8px;padding:0 14px">${box(scene(a, "border-radius:50%"))}${arrow}${box(mid(a, b))}${arrow}${box(scene(b, "border-radius:6px"))}</div>`;
+};
+// Pace is shown as the clip cut into its shots: narrower blocks mean the picture changes more often.
+const PACE = {
+  slow: [1, 1, 1, 1],
+  medium: [1, 1, 1, 1, 1, 1, 1],
+  fast: Array(14).fill(1),
+  build: [5, 4, 3, 2.4, 1.8, 1.4, 1.1, 0.9, 0.7, 0.6, 0.5],
+};
+const paceStage = (tempo, a, b) => {
+  const parts = PACE[tempo] || PACE.medium;
+  return `<div class="stage" style="display:flex;align-items:center;gap:4px;padding:0 16px">${parts.map((w, i) => `<div style="flex:${w};height:70px;border-radius:6px;background:${i % 2 ? b : a}"></div>`).join("")}</div>`;
+};
+
 // tune.json: { headline, sub, price, cta,
 //   color:[{label,desc,bg,ink,accent,secondary}], type:[{label,desc,display,body}],
-//   motion:[{label,desc,ease: smooth|bounce|snap|float|spring}], sound:[{label,desc,energy: soft|steady|punchy|build}] }
+//   depth:[{label,desc,depth: flat|soft|deep}], motion:[{label,desc,ease: smooth|bounce|snap|float|spring}],
+//   transition:[{label,desc,kind: cut|slide|fade|morph|zoom|wipe}], pace:[{label,desc,tempo: slow|medium|fast|build}],
+//   sound:[{label,desc,energy: soft|steady|punchy|build}] }
 // Option 1 of each list is the recommendation.
 const tuneBoards = () => {
   const data = readJson(opt("file") || path.join(project, "boards", "tune.json"));
@@ -165,7 +205,22 @@ ${text.price ? `<div class="price" style="font-family:'${esc(display.family)}';f
       families: (data.type || []).flatMap((t) => [fontOf(t.display).family, fontOf(t.body).family]),
       render: (t) => `${phone(base, fontOf(t.display, 800), fontOf(t.body, 400))}${words(t)}`,
     },
+    depth: {
+      height: 560,
+      families: [],
+      render: (d) => `${depthStage(d.depth, [base.accent, base.secondary || base.accent, base.ink])}<div class="desc">ดูว่าภาพแบนเรียบ หรือลอยขึ้นมามีแสงเงา</div>${words(d)}`,
+    },
     motion: { height: 560, families: [], render: (m) => `${motionStage(m.ease)}<div class="desc">ภาพจางคือตำแหน่งก่อนหน้า ระยะห่างบอกความเร็ว เส้นประคือจุดหยุด</div>${words(m)}` },
+    transition: {
+      height: 560,
+      families: [],
+      render: (t) => `${transitionStage(t.kind, base.accent, base.ink)}<div class="desc">ซ้ายคือฉากก่อน ขวาคือฉากถัดไป ตรงกลางคือตอนกำลังเปลี่ยน</div>${words(t)}`,
+    },
+    pace: {
+      height: 540,
+      families: [],
+      render: (p) => `${paceStage(p.tempo, base.accent, base.secondary || base.ink)}<div class="desc">หนึ่งช่องคือหนึ่งภาพ ช่องยิ่งแคบ ภาพยิ่งเปลี่ยนถี่</div>${words(p)}`,
+    },
     sound: { height: 540, families: [], render: (s) => `${soundWave(s.energy)}<div class="desc">ความสูงคือความดังตลอดคลิป</div>${words(s)}` },
   };
   return Object.entries(parts).filter(([key]) => (data[key] || []).length).map(([key, part]) => ({

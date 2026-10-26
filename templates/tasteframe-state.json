@@ -12,12 +12,22 @@
     "style": "",
     "recipe": "",
     "technique": "",
-    "layout": ""
+    "layout": "",
+    "color": "",
+    "type": "",
+    "depth": "",
+    "motion": "",
+    "transition": "",
+    "pace": "",
+    "sound": ""
   },
   "interviewConfirmed": false,
   "briefConfirmed": false,
   "styleId": "",
   "shelfUrl": "",
   "demoAttested": [],
-  "packageConfirmed": false
+  "packageConfirmed": false,
+  "tasteSet": "",
+  "newSet": false,
+  "assets": []
 }
